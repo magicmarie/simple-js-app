@@ -14,11 +14,16 @@ var pokemonRepository = (function() {
   function addListItem(pokemon) {
     var pokelist = document.querySelector('.pokemon-list');
     var listItem = document.createElement('li');
-    pokelist.appendChild(listItem);
     var button = document.createElement('button');
-    listItem.appendChild(button);
+
     button.innerText = pokemon.name;
-    button.classList.add('button-name');
+    button.classList.add('btn', 'btn-secondary', 'btn-block');
+    button.setAttribute('data-target', '#pokedexModal')
+    button.setAttribute('data-toggle', 'modal');
+
+
+    pokelist.appendChild(listItem);
+    listItem.appendChild(button);
 
     button.addEventListener('click', function(){
       showDetails(pokemon);
@@ -63,18 +68,11 @@ var pokemonRepository = (function() {
   }
 
   function showModal(text) {
-    modalContainer.innerHTML = '';
+    let modalTitle = document.querySelector('.modal-title')
+    modalTitle.innerText = "";
 
-    let modal = document.createElement('div');
-    modal.classList.add('modal');
-
-    let closeButtonElement = document.createElement('button');
-    closeButtonElement.classList.add('modal-close');
-    closeButtonElement.innerText = 'X';
-    closeButtonElement.addEventListener('click', hideModal);
-
-    let titleElement = document.createElement('h1');
-    titleElement.innerText = text.name;
+    let modalBody = document.querySelector('.modal-body')
+    modalBody.innerHTML = ""
 
     let imageElement = document.createElement('img');
     imageElement.setAttribute('src', text.imageUrl);
@@ -83,34 +81,13 @@ var pokemonRepository = (function() {
     heightElement.innerText = 'Height: ' + text.height;
 
     let typesElement = document.createElement('p');
-    typesElement.innerText = 'Types: ' + text.types['0', '1'];
+    typesElement.innerText = 'Types: ' + text.types;
 
-    modal.appendChild(closeButtonElement);
-    modal.appendChild(titleElement);
-    modal.appendChild(imageElement);
-    modal.appendChild(heightElement);
-    modal.appendChild(typesElement);
-    modalContainer.appendChild(modal);
-
-    modalContainer.classList.add('is-visible');
+    modalTitle.innerText = text.name
+    modalBody.appendChild(imageElement);
+    modalBody.appendChild(heightElement);
+    modalBody.appendChild(typesElement);
   }
-
-  function hideModal() {
-    modalContainer.classList.remove('is-visible');
-  }
-
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modalContainer.classList.contains('is-visible')) {
-      hideModal();
-    }
-  });
-
-  modalContainer.addEventListener('click', (e) => {
-    let target = e.target;
-    if (target === modalContainer) {
-      hideModal();
-    }
-  });
 
 return {
   getAll: getAll,
@@ -120,7 +97,6 @@ return {
   loadList: loadList,
   loadDetails: loadDetails,
   showModal: showModal,
-  hideModal: hideModal,
 };
 })()
 
